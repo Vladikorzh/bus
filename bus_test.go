@@ -13,13 +13,17 @@ func TestBus_Publish(t *testing.T) {
 		Result string
 	}
 
-	bus.Handle(Ping{}, func(ctx context.Context, ping *Ping) {
-		ping.Result = "pong"
-	})
+	messages := bus.New()
+
+	messages.Handle(bus.HandlerFunc[Ping](func(ctx context.Context, msg *Ping) error {
+		msg.Result = "pong"
+
+		return nil
+	}))
 
 	msg := Ping{}
 
-	if err := bus.Publish(context.Background(), &msg); err != nil {
+	if err := messages.Publish(context.Background(), &msg); err != nil {
 		t.Fatal(err)
 	}
 
@@ -31,14 +35,18 @@ func BenchmarkBus_Publish(b *testing.B) {
 		Result string
 	}
 
-	bus.Handle(Ping{}, func(ctx context.Context, ping *Ping) {
-		ping.Result = "pong"
-	})
+	messages := bus.New()
+
+	messages.Handle(bus.HandlerFunc[Ping](func(ctx context.Context, msg *Ping) error {
+		msg.Result = "pong"
+
+		return nil
+	}))
 
 	for i := 0; i < b.N; i++ {
 		msg := Ping{}
 
-		if err := bus.Publish(context.Background(), &msg); err != nil {
+		if err := messages.Publish(context.Background(), &msg); err != nil {
 			b.Fatal(err)
 		}
 	}

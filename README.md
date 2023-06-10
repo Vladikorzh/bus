@@ -1,26 +1,33 @@
 # Bus
 
-```go
-import "github.com/Vladikorzh/bus"
-```
-
 Example:
 ```go
-import "github.com/Vladikorzh/bus"
+package main
+
+import (
+	"context"
+	"fmt"
+	"github.com/Vladikorzh/bus"
+)
 
 type Ping struct {
     Result string
 }
 
-func main()  {
-    msg := Ping{}
-    
-    bus.Handle(Ping{}, func(ctx context.Context, ping *Ping) {
-        ping.Result = "pong"
-    })
-    
-    _ = bus.Publish(context.Background(), &msg)
-    
+func main() {
+    var msg Ping
+
+    messages := bus.New()
+
+    messages.Handle(bus.HandlerFunc[Ping](func(ctx context.Context, msg *Ping) error {
+        msg.Result = "pong"
+
+        return nil
+    }))
+
+    _ = messages.Publish(context.Background(), &msg)
+
     fmt.Println(msg.Result)
 }
+
 ```
