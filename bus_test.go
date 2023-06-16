@@ -15,7 +15,7 @@ func TestBus_Publish(t *testing.T) {
 
 	messages := bus.New()
 
-	messages.Handle(bus.HandlerFunc[Ping](func(ctx context.Context, msg *Ping) error {
+	messages.Handle(bus.Func(func(ctx context.Context, msg *Ping) error {
 		msg.Result = "pong"
 
 		return nil
@@ -37,7 +37,7 @@ func BenchmarkBus_Publish(b *testing.B) {
 
 	messages := bus.New()
 
-	messages.Handle(bus.HandlerFunc[Ping](func(ctx context.Context, msg *Ping) error {
+	messages.Handle(bus.Func(func(ctx context.Context, msg *Ping) error {
 		msg.Result = "pong"
 
 		return nil

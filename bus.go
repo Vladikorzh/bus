@@ -17,6 +17,10 @@ type Handler interface {
 	handle(ctx context.Context, msg Message) error
 }
 
+func Func[T any](fn func(ctx context.Context, msg *T) error) Handler {
+	return HandlerFunc[T](fn)
+}
+
 type HandlerFunc[T any] func(ctx context.Context, msg *T) error
 
 func (fn HandlerFunc[T]) handle(ctx context.Context, msg Message) error {
