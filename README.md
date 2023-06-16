@@ -10,20 +10,22 @@ import (
 	"github.com/Vladikorzh/bus"
 )
 
-type Ping struct {
-    Result string
-}
+
 
 func main() {
+    type Ping struct {
+        Result string
+    }
+
     var msg Ping
 
-	messages := bus.New()
+    messages := bus.New()
 
-	messages.Handle(bus.Func(func(ctx context.Context, msg *Ping) error {
-		msg.Result = "pong"
+    messages.Handle(bus.Func(func(ctx context.Context, msg *Ping) error {
+        msg.Result = "pong"
 
-		return nil
-	}))
+        return nil
+    }))
 
     _ = messages.Publish(context.Background(), &msg)
 
